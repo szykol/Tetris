@@ -49,20 +49,35 @@ Shape::Shape(Shape::Type type, const sf::Vector2u& startPos)
 
 void Shape::applyMovement(Movement movement)
 {
-    auto indexVector = sf::Vector2i(0, 0);
-    if (movement == Movement::DOWN)
-        indexVector = {0, 1};
-    else if (movement == Movement::LEFT)
-        indexVector = {-1, 0};
-    else if (movement == Movement::RIGHT)
-        indexVector = {1, 0};
+	auto nextPos = calculateNextPosition(movement);
 
+	auto posIt = nextPos.begin();
     for (auto& cell: m_cells)
     {
+        cell.setIndex(*posIt);
+		posIt++;
+    }
+}
+
+std::vector<sf::Vector2i> Shape::calculateNextPosition(Movement movement)
+{
+	auto indexVector = sf::Vector2i(0, 0);
+	if (movement == Movement::DOWN)
+		indexVector = { 0, 1 };
+	else if (movement == Movement::LEFT)
+		indexVector = { -1, 0 };
+	else if (movement == Movement::RIGHT)
+		indexVector = { 1, 0 };
+
+	std::vector<sf::Vector2i> newPos;
+	for (auto& cell : m_cells)
+	{
 		auto [x, y] = cell.getIndex();
 		auto [nextX, nextY] = indexVector;
-        cell.setIndex(sf::Vector2i(x + nextX, y + nextY));
-    }
+		newPos.push_back(sf::Vector2i(x + nextX, y + nextY));
+	}
+
+	return newPos;
 }
 
 void Shape::render(sf::RenderTarget& target)

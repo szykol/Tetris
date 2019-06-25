@@ -15,4 +15,5 @@ public:
     explicit Shape(Type type, const sf::Vector2u& startPos = sf::Vector2u(0,0));
     void render(sf::RenderTarget& target);
     void applyMovement(Movement movement);
+	std::vector<sf::Vector2i> calculateNextPosition(Movement movement);
 };

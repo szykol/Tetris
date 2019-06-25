@@ -13,6 +13,8 @@ class MainGame : public sen::State {
     float movementDeltaTime = 0.f;
     static sf::Vector2f s_gridTopLeft;
     std::unique_ptr<Shape> m_shape;
+
+	bool m_hitGround = false;
 public:
     MainGame();
 

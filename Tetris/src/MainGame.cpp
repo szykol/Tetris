@@ -46,7 +46,20 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
     }
     if (gravityDeltaTime > gravityTime)
     {
-        m_shape->applyMovement(Shape::Movement::DOWN);
+		auto nextPos = m_shape->calculateNextPosition(Shape::Movement::DOWN);
+		
+		auto gridSize = m_grid.getSize();
+		for (auto& cell : nextPos)
+		{
+			if (!m_hitGround && cell.y >= gridSize.y)
+			{
+				std::cout << "Shape has hit the Ground!" << std::endl;
+				m_hitGround = true;
+			}
+		}
+
+		if (!m_hitGround)
+			m_shape->applyMovement(Shape::Movement::DOWN);
         gravityDeltaTime -= gravityTime;
     }  
 }

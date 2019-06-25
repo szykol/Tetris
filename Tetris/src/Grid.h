@@ -13,4 +13,5 @@ class Grid
 public:
     Grid(const sf::Vector2u& size, const sf::Vector2f& topLeft);
     void render(sf::RenderTarget &target);
+	inline const sf::Vector2u & getSize() const { return m_size; }
 };
