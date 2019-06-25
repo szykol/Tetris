@@ -26,17 +26,17 @@ Shape::Shape(Shape::Type type, const sf::Vector2u& startPos)
     }
     else if (type == Type::T)
     {
-        m_cells = {Cell(startPos + sf::Vector2u{0,0}), Cell({1, 0}), Cell({2, 0}), Cell({1, 1})};
+        m_cells = {Cell(startPos + sf::Vector2u{0,0}), Cell(startPos + sf::Vector2u{1, 0}), Cell(startPos + sf::Vector2u{2, 0}), Cell(startPos + sf::Vector2u{1, 1})};
         color = sf::Color(222,222,222);
     }
     else if (type == Type::S)
     {
-        m_cells = {Cell({0,1}), Cell({1, 1}), Cell({1, 0}), Cell({2, 0})};
+        m_cells = {Cell(startPos + sf::Vector2u{0,1}), Cell(startPos + sf::Vector2u{1, 1}), Cell(startPos + sf::Vector2u{1, 0}), Cell(startPos + sf::Vector2u{2, 0})};
         color = sf::Color::Blue;
     }
     else if (type == Type::Z)
     {
-        m_cells = {Cell({0,0}), Cell({1, 0}), Cell({1, 1}), Cell({2, 1})};
+        m_cells = {Cell(startPos + sf::Vector2u{0,0}), Cell(startPos + sf::Vector2u{1, 0}), Cell(startPos + sf::Vector2u{1, 1}), Cell(startPos + sf::Vector2u{2, 1})};
         color = sf::Color::Green;
     }
 
