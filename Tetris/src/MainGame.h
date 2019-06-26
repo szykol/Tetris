@@ -5,6 +5,7 @@
 
 #include "Grid.h"
 #include "Shape.h"
+#include "Cell.h"
 
 class MainGame : public sen::State {
     sen::TextBox info;    
@@ -13,6 +14,7 @@ class MainGame : public sen::State {
     float movementDeltaTime = 0.f;
     static sf::Vector2f s_gridTopLeft;
     std::unique_ptr<Shape> m_shape;
+	std::vector<Cell> m_ground;
 
 	bool m_hitGround = false;
 public:

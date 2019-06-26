@@ -16,6 +16,11 @@ MainGame::MainGame()
     info.setPosition(centerPos);
     //sen::AudioProvider::get()->playMusic("../res/Sounds/Motivational.wav");
 
+	auto [x, y] = m_grid.getSize();
+	for (int i = 0; i < x; i++)
+	{
+		m_ground.push_back(sf::Vector2u(i, y));
+	}
 
     auto type = sen::Random::get<int>(0, Shape::Type::Z);
     auto posX = (unsigned int)sen::Random::get<int>(0, 10);
@@ -49,17 +54,30 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 		auto nextPos = m_shape->calculateNextPosition(Shape::Movement::DOWN);
 		
 		auto gridSize = m_grid.getSize();
+
 		for (auto& cell : nextPos)
 		{
-			if (!m_hitGround && cell.y >= gridSize.y)
+			for (auto& groundCell : m_ground)
 			{
-				std::cout << "Shape has hit the Ground!" << std::endl;
-				m_hitGround = true;
+				if (!m_hitGround && cell == groundCell.getIndex())
+				{
+					std::cout << "Shape has hit the Ground!" << std::endl;
+
+					auto shapeCells = m_shape->getCells();
+					m_ground.insert(m_ground.end(), shapeCells.begin(), shapeCells.end());
+					
+					m_hitGround = true;
+
+					auto type = sen::Random::get<int>(0, Shape::Type::Z);
+					auto posX = sen::Random::get<unsigned int>(0, 10);
+
+					m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{ posX, 0 });
+				}
 			}
 		}
 
-		if (!m_hitGround)
-			m_shape->applyMovement(Shape::Movement::DOWN);
+		m_hitGround = false;
+		m_shape->applyMovement(Shape::Movement::DOWN);
         gravityDeltaTime -= gravityTime;
     }  
 }
@@ -72,7 +90,12 @@ void MainGame::render(sf::RenderTarget& target)
 {
     auto& window = Application::getWindow();
     info.render(window);
+
     m_grid.render(window);
+
+	for (auto& groundCell : m_ground) {
+		groundCell.render(target);
+	}
     m_shape->render(window);
 }
 

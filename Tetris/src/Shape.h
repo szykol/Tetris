@@ -16,4 +16,5 @@ public:
     void render(sf::RenderTarget& target);
     void applyMovement(Movement movement);
 	std::vector<sf::Vector2i> calculateNextPosition(Movement movement);
+	inline const std::vector<Cell>& getCells() const { return m_cells; }
 };
