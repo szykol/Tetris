@@ -42,11 +42,36 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
     movementDeltaTime += deltaTime;
     if (movementDeltaTime >= moveTime)
     {
+		auto move = Shape::Movement::NONE;
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            m_shape->applyMovement(Shape::Movement::RIGHT);
+            move = Shape::Movement::RIGHT;
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            m_shape->applyMovement(Shape::Movement::LEFT);
+            move = Shape::Movement::LEFT;
         
+		auto nextIndex = m_shape->calculateNextPosition(move);
+		auto gridSize = m_grid.getSize();
+
+		auto applyMovement = true;
+		for (auto &nextIndexCell: nextIndex)
+		{
+			if (nextIndexCell.x < 0 || nextIndexCell.x >= gridSize.x)
+			{
+				applyMovement = false;
+				break;
+			}
+
+			for (auto &groundCell: m_ground)
+			{
+				if (groundCell.getIndex() == nextIndexCell)
+				{	
+					applyMovement = false;
+					break;
+				}
+			}
+		}
+		if (applyMovement)
+			m_shape->applyMovement(move);
+
         movementDeltaTime -= moveTime;
     }
     if (gravityDeltaTime > gravityTime)
