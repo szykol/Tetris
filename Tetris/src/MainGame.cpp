@@ -49,62 +49,60 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
             move = Shape::Movement::LEFT;
         
 		auto nextIndex = m_shape->calculateNextPosition(move);
-		auto gridSize = m_grid.getSize();
-
-		auto applyMovement = true;
-		for (auto &nextIndexCell: nextIndex)
-		{
-			if (nextIndexCell.x < 0 || nextIndexCell.x >= gridSize.x)
-			{
-				applyMovement = false;
-				break;
-			}
-
-			for (auto &groundCell: m_ground)
-			{
-				if (groundCell.getIndex() == nextIndexCell)
-				{	
-					applyMovement = false;
-					break;
-				}
-			}
-		}
-		if (applyMovement)
+		
+		if (!nextPositionTouchesGround(nextIndex) && nextPositionInArea(nextIndex))
 			m_shape->applyMovement(move);
-
+		
         movementDeltaTime -= moveTime;
     }
     if (gravityDeltaTime > gravityTime)
     {
-		auto nextPos = m_shape->calculateNextPosition(Shape::Movement::DOWN);
-		
+		auto nextIndex = m_shape->calculateNextPosition(Shape::Movement::DOWN);
 		auto gridSize = m_grid.getSize();
 
-		for (auto& cell : nextPos)
-		{
-			for (auto& groundCell : m_ground)
-			{
-				if (!m_hitGround && cell == groundCell.getIndex())
-				{
-					std::cout << "Shape has hit the Ground!" << std::endl;
-
-					auto shapeCells = m_shape->getCells();
-					m_ground.insert(m_ground.end(), shapeCells.begin(), shapeCells.end());
-					
-					m_hitGround = true;
-
-					auto type = sen::Random::get<int>(0, Shape::Type::Z);
-					auto posX = sen::Random::get<unsigned int>(0, 10);
-
-					m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{ posX, 0 });
-				}
-			}
-		}
-
-		m_hitGround = false;
+		if (nextPositionTouchesGround(nextIndex))
+			spawnNewShape();
+			
 		m_shape->applyMovement(Shape::Movement::DOWN);
         gravityDeltaTime -= gravityTime;
     }  
+}
+
+bool MainGame::nextPositionTouchesGround(const std::vector<sf::Vector2i>& nextIndex)
+{
+	for (auto &nextIndexCell: nextIndex)
+	{
+		for (auto &groundCell: m_ground)
+		{
+			if (groundCell.getIndex() == nextIndexCell)
+				return true;
+		}
+	}
+	return false;
+}
+
+bool MainGame::nextPositionInArea(const std::vector<sf::Vector2i>& nextIndex)
+{
+	auto gridSize = m_grid.getSize();
+	for (auto &nextIndexCell: nextIndex)
+	{
+		if (nextIndexCell.x < 0 || nextIndexCell.x >= gridSize.x)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void MainGame::spawnNewShape()
+{
+	auto shapeCells = m_shape->getCells();
+	m_ground.insert(m_ground.end(), shapeCells.begin(), shapeCells.end());
+
+	auto type = sen::Random::get<int>(0, Shape::Type::Z);
+	auto posX = sen::Random::get<unsigned int>(0, 10);
+
+	m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{ posX, 0 });
 }
 
 void MainGame::handleEvents(sf::Event& evnt)

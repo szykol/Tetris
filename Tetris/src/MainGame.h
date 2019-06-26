@@ -27,4 +27,7 @@ public:
     virtual void input(sf::RenderWindow& window) override;
 
     inline static const sf::Vector2f& getGridTopLeft() {return s_gridTopLeft;}
+    bool nextPositionTouchesGround(const std::vector<sf::Vector2i>& nextPosition);
+    bool nextPositionInArea(const std::vector<sf::Vector2i>& nextPosition);
+    void spawnNewShape();
 };
