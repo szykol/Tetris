@@ -7,6 +7,8 @@
 #include "Shape.h"
 #include "Cell.h"
 
+#include <tuple>
+
 class MainGame : public sen::State {
     sen::TextBox info;    
     Grid m_grid;
@@ -17,6 +19,8 @@ class MainGame : public sen::State {
 	std::vector<Cell> m_ground;
 
 	bool m_hitGround = false;
+
+    enum AreaBounds {NONE = 0, LEFT, RIGHT};
 public:
     MainGame();
 
@@ -28,6 +32,7 @@ public:
 
     inline static const sf::Vector2f& getGridTopLeft() {return s_gridTopLeft;}
     bool nextPositionTouchesGround(const std::vector<sf::Vector2i>& nextPosition);
-    bool nextPositionInArea(const std::vector<sf::Vector2i>& nextPosition);
+    std::tuple<bool,AreaBounds> nextPositionInArea(const std::vector<sf::Vector2i>& nextPosition);
+    void keepShapeInBounds();
     void spawnNewShape();
 };

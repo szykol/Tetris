@@ -26,6 +26,7 @@ MainGame::MainGame()
     auto posX = (unsigned int)sen::Random::get<int>(0, 10);
 
     m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{posX, 0});
+	keepShapeInBounds();
 }
 
 void MainGame::update(sf::RenderWindow& window)
@@ -35,7 +36,7 @@ void MainGame::update(sf::RenderWindow& window)
 
 void MainGame::update(float deltaTime, sf::RenderWindow& window)
 {
-    static const auto gravityTime = 1.f;
+    static const auto gravityTime = 0.2f;
     static const auto moveTime = 0.15f;
 
     gravityDeltaTime += deltaTime;
@@ -50,7 +51,8 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
         
 		auto nextIndex = m_shape->calculateNextPosition(move);
 		
-		if (!nextPositionTouchesGround(nextIndex) && nextPositionInArea(nextIndex))
+		auto [inArea, bounds] = nextPositionInArea(nextIndex);
+		if (!nextPositionTouchesGround(nextIndex) && inArea)
 			m_shape->applyMovement(move);
 		
         movementDeltaTime -= moveTime;
@@ -81,17 +83,45 @@ bool MainGame::nextPositionTouchesGround(const std::vector<sf::Vector2i>& nextIn
 	return false;
 }
 
-bool MainGame::nextPositionInArea(const std::vector<sf::Vector2i>& nextIndex)
+std::tuple<bool,MainGame::AreaBounds> MainGame::nextPositionInArea(const std::vector<sf::Vector2i>& nextIndex)
 {
 	auto gridSize = m_grid.getSize();
 	for (auto &nextIndexCell: nextIndex)
 	{
-		if (nextIndexCell.x < 0 || nextIndexCell.x >= gridSize.x)
-		{
-			return false;
-		}
+		if (nextIndexCell.x < 0)
+			return std::make_tuple(false, AreaBounds::LEFT);
+		else if (nextIndexCell.x >= gridSize.x)
+			return std::make_tuple(false, AreaBounds::RIGHT);
 	}
-	return true;
+	return std::make_tuple(true, AreaBounds::NONE);
+}
+
+void MainGame::keepShapeInBounds()
+{
+	auto currentCells = m_shape->getCells();
+
+	std::vector<sf::Vector2i> cellIndices; 
+	std::transform( currentCells.begin(), currentCells.end(), std::back_inserter( cellIndices ), [](const Cell& c) {
+		return c.getIndex();
+	});
+
+	while(true)
+	{
+		auto [inArea, bounds] = nextPositionInArea(cellIndices);
+		if (inArea)
+			break;
+		
+		if (bounds == AreaBounds::LEFT)
+			m_shape->applyMovement(Shape::Movement::RIGHT);
+		else if (bounds == AreaBounds::RIGHT)
+			m_shape->applyMovement(Shape::Movement::LEFT);
+
+		cellIndices.clear();
+		currentCells = m_shape->getCells();
+		std::transform(currentCells.begin(), currentCells.end(), std::back_inserter(cellIndices), [](const Cell& c) {
+			return c.getIndex();
+		});
+	}
 }
 
 void MainGame::spawnNewShape()
@@ -103,6 +133,7 @@ void MainGame::spawnNewShape()
 	auto posX = sen::Random::get<unsigned int>(0, 10);
 
 	m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{ posX, 0 });
+	keepShapeInBounds();
 }
 
 void MainGame::handleEvents(sf::Event& evnt)
