@@ -11,7 +11,7 @@ Grid::Grid(const sf::Vector2u& size, const sf::Vector2f& topLeft)
     {
         for (auto y = 0; y < size.y; y++)
         {
-            auto cell = Cell(sf::Vector2u(x, y));
+            auto cell = Cell(sf::Vector2i(x, y));
             m_grid.push_back(std::move(cell));
         }
     }

@@ -15,7 +15,7 @@ private:
     Type m_type;
 	int m_pivotIndex = 1;
 public:
-    explicit Shape(Type type, const sf::Vector2u& startPos = sf::Vector2u(0,0));
+    explicit Shape(Type type, const sf::Vector2i& startPos = sf::Vector2i(0,0));
     void render(sf::RenderTarget& target);
     void applyMovement(Movement movement);
 	std::vector<sf::Vector2i> calculateNextPosition(Movement movement);

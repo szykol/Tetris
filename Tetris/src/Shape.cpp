@@ -2,48 +2,48 @@
 
 #include <functional>
 
-Shape::Shape(Shape::Type type, const sf::Vector2u& startPos)
+Shape::Shape(Shape::Type type, const sf::Vector2i& startPos)
     : m_type(type)
 {
     auto color = sf::Color::Yellow;
     if(type == Type::L)
     {
-        m_cells = {Cell(startPos + sf::Vector2u{0,0}), Cell(startPos + sf::Vector2u{0, 1}), Cell(startPos + sf::Vector2u{0, 2}), Cell(startPos + sf::Vector2u{1, 2})};
+        m_cells = {Cell(startPos + sf::Vector2i{0,0}), Cell(startPos + sf::Vector2i{0, 1}), Cell(startPos + sf::Vector2i{0, 2}), Cell(startPos + sf::Vector2i{1, 2})};
 		m_pivotIndex = 1;
     }
     else if (type == Type::I)
     {
-        m_cells = {Cell(startPos + sf::Vector2u{0,0}), Cell(startPos + sf::Vector2u{0, 1}), Cell(startPos + sf::Vector2u{0, 2}), Cell(startPos + sf::Vector2u{0, 3})};
+        m_cells = {Cell(startPos + sf::Vector2i{0,0}), Cell(startPos + sf::Vector2i{0, 1}), Cell(startPos + sf::Vector2i{0, 2}), Cell(startPos + sf::Vector2i{0, 3})};
         color = sf::Color::Red;
 		m_pivotIndex = 2;
     }
     else if (type == Type::J)
     {
-        m_cells = {Cell(startPos + sf::Vector2u{1,0}), Cell(startPos + sf::Vector2u{1, 1}), Cell(startPos + sf::Vector2u{1, 2}), Cell(startPos + sf::Vector2u{0, 2})};
+        m_cells = {Cell(startPos + sf::Vector2i{1,0}), Cell(startPos + sf::Vector2i{1, 1}), Cell(startPos + sf::Vector2i{1, 2}), Cell(startPos + sf::Vector2i{0, 2})};
         color = sf::Color::Magenta;
 		m_pivotIndex = 1;
     }
     else if (type == Type::O)
     {
-        m_cells = {Cell(startPos + sf::Vector2u{0,0}), Cell(startPos + sf::Vector2u{1, 0}), Cell(startPos + sf::Vector2u{1, 1}), Cell(startPos + sf::Vector2u{0, 1})};
+        m_cells = {Cell(startPos + sf::Vector2i{0,0}), Cell(startPos + sf::Vector2i{1, 0}), Cell(startPos + sf::Vector2i{1, 1}), Cell(startPos + sf::Vector2i{0, 1})};
         color = sf::Color::Cyan;
 		m_pivotIndex = 0;
     }
     else if (type == Type::T)
     {
-        m_cells = {Cell(startPos + sf::Vector2u{0,1}), Cell(startPos + sf::Vector2u{1, 1}), Cell(startPos + sf::Vector2u{2, 1}), Cell(startPos + sf::Vector2u{1, 0})};
+        m_cells = {Cell(startPos + sf::Vector2i{0,1}), Cell(startPos + sf::Vector2i{1, 1}), Cell(startPos + sf::Vector2i{2, 1}), Cell(startPos + sf::Vector2i{1, 0})};
         color = sf::Color(222,222,222);
 		m_pivotIndex = 1;
     }
     else if (type == Type::S)
     {
-        m_cells = {Cell(startPos + sf::Vector2u{0,1}), Cell(startPos + sf::Vector2u{1, 1}), Cell(startPos + sf::Vector2u{1, 0}), Cell(startPos + sf::Vector2u{2, 0})};
+        m_cells = {Cell(startPos + sf::Vector2i{0,1}), Cell(startPos + sf::Vector2i{1, 1}), Cell(startPos + sf::Vector2i{1, 0}), Cell(startPos + sf::Vector2i{2, 0})};
         color = sf::Color::Blue;
 		m_pivotIndex = 1;
     }
     else if (type == Type::Z)
     {
-        m_cells = {Cell(startPos + sf::Vector2u{0,0}), Cell(startPos + sf::Vector2u{1, 0}), Cell(startPos + sf::Vector2u{1, 1}), Cell(startPos + sf::Vector2u{2, 1})};
+        m_cells = {Cell(startPos + sf::Vector2i{0,0}), Cell(startPos + sf::Vector2i{1, 0}), Cell(startPos + sf::Vector2i{1, 1}), Cell(startPos + sf::Vector2i{2, 1})};
         color = sf::Color::Green;
 		m_pivotIndex = 2;
     }

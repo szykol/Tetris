@@ -2,7 +2,7 @@
 
 #include "MainGame.h"
 
-Cell::Cell(const sf::Vector2u& index)
+Cell::Cell(const sf::Vector2i& index)
     : m_gridIndex(index)
 {
     setSize({CELLSIZE, CELLSIZE});
