@@ -19,13 +19,10 @@ MainGame::MainGame()
 	auto [x, y] = m_grid.getSize();
 	for (int i = 0; i < x; i++)
 	{
-		m_ground.push_back(sf::Vector2u(i, y));
+		m_ground.push_back(sf::Vector2i(i, y));
 	}
 
-    auto type = sen::Random::get<int>(0, Shape::Type::Z);
-    auto posX = (unsigned int)sen::Random::get<int>(0, 10);
-
-    m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{posX, 0});
+    spawnNewShape();
 	keepShapeInBounds();
 }
 
@@ -79,6 +76,7 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 
 		if (nextPositionTouchesGround(nextIndex))
 		{
+			shapeToGround();
 			spawnNewShape();
 			clearGround();
 		}
@@ -156,14 +154,17 @@ void MainGame::pullTheGround(int y)
 
 void MainGame::spawnNewShape()
 {
-	auto shapeCells = m_shape->getCells();
-	m_ground.insert(m_ground.end(), shapeCells.begin(), shapeCells.end());
-
 	auto type = sen::Random::get<int>(0, Shape::Type::Z);
 	auto posX = sen::Random::get<unsigned int>(0, 10);
 
-	m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{ posX, 0 });
+	m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2i{ int(posX), -2 });
 	keepShapeInBounds();
+}
+
+void MainGame::shapeToGround()
+{
+	auto shapeCells = m_shape->getCells();
+	m_ground.insert(m_ground.end(), shapeCells.begin(), shapeCells.end());
 }
 
 void MainGame::clearGround()
