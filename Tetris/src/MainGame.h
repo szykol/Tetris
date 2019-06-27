@@ -10,7 +10,7 @@
 #include <tuple>
 
 class MainGame : public sen::State {
-    sen::TextBox info;    
+    sen::TextBox m_scoreBox;    
     Grid m_grid;
     float gravityDeltaTime = 0.f;
     float movementDeltaTime = 0.f;
@@ -21,6 +21,7 @@ class MainGame : public sen::State {
 	bool m_hitGround = false;
 
     enum AreaBounds {NONE = 0, LEFT, RIGHT};
+    int m_score = 0;
 public:
     MainGame();
 

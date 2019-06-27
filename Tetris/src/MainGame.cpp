@@ -13,11 +13,13 @@
 sf::Vector2f MainGame::s_gridTopLeft = sf::Vector2f(400,0);
 
 MainGame::MainGame()
-    : info("You're playing Tetris!"),
+    : m_score(0),
+	m_scoreBox("Your Score: 0"),
 	m_grid({ 10, 20 }, s_gridTopLeft)
 {
-    const auto centerPos = (sf::Vector2f)Application::getInitialWindowSize() / 2.f;
-    info.setPosition(centerPos);
+	m_scoreBox.setFitTextSize(true);
+    auto sizeX = Application::getInitialWindowSize().x;
+    m_scoreBox.setPosition(sizeX - 200, 200);
     //sen::AudioProvider::get()->playMusic("../res/Sounds/Motivational.wav");
 
 	auto [x, y] = m_grid.getSize();
@@ -94,6 +96,8 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 		m_shape->applyMovement(Shape::Movement::DOWN);
         gravityDeltaTime -= gravityTime;
     }  
+
+	m_scoreBox.getTextObject().setString("Your Score: 50000" + std::to_string(m_score));
 }
 
 bool MainGame::nextPositionTouchesGround(const std::vector<sf::Vector2i>& nextIndex)
@@ -180,7 +184,7 @@ void MainGame::spawnNewShape()
 
 	if (nextPositionTouchesGround(cellIndices))
 	{
-		sen::StateManager::pushState(std::make_unique<ScoreState>());
+		sen::StateManager::pushState(std::make_unique<ScoreState>(m_score));
 	}
 }
 
@@ -192,6 +196,7 @@ void MainGame::shapeToGround()
 
 void MainGame::clearGround()
 {
+	auto groundCount = 0;
 	for (int y = m_grid.getSize().y -1; y >= 0;)
 	{
 		auto pred = [&y](auto &c) {
@@ -202,12 +207,22 @@ void MainGame::clearGround()
 		{
 			m_ground.erase(std::remove_if(m_ground.begin(), m_ground.end(), pred), m_ground.end());
 			pullTheGround(y);
+			groundCount++;
 		}
 		else
 		{
 			y--;
 		}
 	}
+
+	if (groundCount == 1)
+		m_score += 40;
+	else if (groundCount == 2)
+		m_score += 100;
+	else if (groundCount == 3)
+		m_score += 300;
+	else if (groundCount >= 4)
+		m_score += 1200;
 }
 
 void MainGame::handleEvents(sf::Event& evnt)
@@ -217,7 +232,6 @@ void MainGame::handleEvents(sf::Event& evnt)
 void MainGame::render(sf::RenderTarget& target)
 {
 	target.clear(sf::Color(128,128,128));
-    info.render(target);
 
     m_grid.render(target);
 
@@ -225,6 +239,7 @@ void MainGame::render(sf::RenderTarget& target)
 		groundCell.render(target);
 	}
     m_shape->render(target);
+    m_scoreBox.render(target);
 }
 
 void MainGame::input(sf::RenderWindow& window)
