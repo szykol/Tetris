@@ -97,7 +97,7 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
         gravityDeltaTime -= gravityTime;
     }  
 
-	m_scoreBox.getTextObject().setString("Your Score: 50000" + std::to_string(m_score));
+	m_scoreBox.getTextObject().setString("Your Score: " + std::to_string(m_score));
 }
 
 bool MainGame::nextPositionTouchesGround(const std::vector<sf::Vector2i>& nextIndex)
