@@ -1,5 +1,7 @@
 #include "MainGame.h"
 
+#include "ScoreState.h"
+
 #include <Application.h>
 #include <Managers/AudioProvider.h>
 #include <Managers/StateManager.h>
@@ -35,7 +37,7 @@ void MainGame::update(sf::RenderWindow& window)
 
 void MainGame::update(float deltaTime, sf::RenderWindow& window)
 {
-    static const auto gravityTime = 0.5f;
+    static auto gravityTime = 0.5f;
     static const auto moveTime = 0.1f;
 
     gravityDeltaTime += deltaTime;
@@ -71,6 +73,11 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 			}
 		}
     }
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		gravityTime = 0.1f;
+	else
+		gravityTime = 0.5f;
 
     if (gravityDeltaTime > gravityTime)
     {
@@ -173,8 +180,7 @@ void MainGame::spawnNewShape()
 
 	if (nextPositionTouchesGround(cellIndices))
 	{
-		auto pop = std::make_unique<sen::Popup>("END GAME");
-		sen::StateManager::pushPopup(std::move(pop));
+		sen::StateManager::pushState(std::make_unique<ScoreState>());
 	}
 }
 
