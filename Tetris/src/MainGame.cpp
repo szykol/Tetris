@@ -132,8 +132,7 @@ void MainGame::spawnNewShape()
 	auto shapeCells = m_shape->getCells();
 	m_ground.insert(m_ground.end(), shapeCells.begin(), shapeCells.end());
 
-	//auto type = sen::Random::get<int>(0, Shape::Type::Z);
-	auto type = Shape::Type::T;
+	auto type = sen::Random::get<int>(0, Shape::Type::Z);
 	auto posX = sen::Random::get<unsigned int>(0, 10);
 
 	m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{ posX, 0 });

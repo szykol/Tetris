@@ -13,6 +13,7 @@ public:
 private:
 	std::vector<Cell> m_cells;
     Type m_type;
+	int m_pivotIndex = 1;
 public:
     explicit Shape(Type type, const sf::Vector2u& startPos = sf::Vector2u(0,0));
     void render(sf::RenderTarget& target);
