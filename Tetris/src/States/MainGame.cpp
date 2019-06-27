@@ -40,10 +40,12 @@ void MainGame::update(sf::RenderWindow& window)
 void MainGame::update(float deltaTime, sf::RenderWindow& window)
 {
     static auto gravityTime = 0.5f;
-    static const auto moveTime = 0.1f;
+    static const auto rotateTime = 0.35f;
+	static const auto moveTime = 0.1f;
 
     gravityDeltaTime += deltaTime;
     movementDeltaTime += deltaTime;
+	rotateDeltaTime += deltaTime;
 	if (movementDeltaTime >= moveTime)
 	{
 		auto move = Shape::Movement::NONE;
@@ -51,10 +53,7 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 			move = Shape::Movement::RIGHT;
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			move = Shape::Movement::LEFT;
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-			move = Shape::Movement::ROTATE_RIGHT;
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
-			move = Shape::Movement::ROTATE_LEFT;
+		
 
 		auto nextIndex = m_shape->calculateNextPosition(move);
 		auto [inArea, bounds] = nextPositionInArea(nextIndex);
@@ -62,21 +61,36 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 
 		if (!nextPositionTouchesGround(nextIndex))
 		{
-			if (move == Shape::Movement::ROTATE_LEFT || move == Shape::Movement::ROTATE_RIGHT)
+			if (inArea)
 			{
 				m_shape->applyMovement(move);
-				keepShapeInBounds();
-		        movementDeltaTime -= moveTime;
-			}
-			else if (inArea)
-			{
-				m_shape->applyMovement(move);
-				movementDeltaTime -= moveTime;
+				movementDeltaTime = 0.f;
 			}
 		}
     }
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	if (rotateDeltaTime >= rotateTime)
+	{
+
+		auto move = Shape::Movement::NONE;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			move = Shape::Movement::ROTATE_RIGHT;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+			move = Shape::Movement::ROTATE_LEFT;
+
+		auto nextIndex = m_shape->calculateNextPosition(move);
+		auto [inArea, bounds] = nextPositionInArea(nextIndex);
+	
+		if (!nextPositionTouchesGround(nextIndex))
+			if (move == Shape::Movement::ROTATE_LEFT || move == Shape::Movement::ROTATE_RIGHT)
+			{
+				m_shape->applyMovement(move);
+				keepShapeInBounds();
+				rotateDeltaTime = 0.f;
+			}
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		gravityTime = 0.1f;
 	else
 		gravityTime = 0.5f;
@@ -94,7 +108,7 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 		}
 			
 		m_shape->applyMovement(Shape::Movement::DOWN);
-        gravityDeltaTime -= gravityTime;
+        gravityDeltaTime = 0.f;
     }  
 
 	m_scoreBox.getTextObject().setString("Your Score: " + std::to_string(m_score));

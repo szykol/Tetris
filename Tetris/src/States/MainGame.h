@@ -14,6 +14,7 @@ class MainGame : public sen::State {
     Grid m_grid;
     float gravityDeltaTime = 0.f;
     float movementDeltaTime = 0.f;
+	float rotateDeltaTime = 0.f;
     static sf::Vector2f s_gridTopLeft;
     std::unique_ptr<Shape> m_shape;
 	std::vector<Cell> m_ground;
