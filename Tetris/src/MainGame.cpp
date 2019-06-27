@@ -142,15 +142,14 @@ void MainGame::handleEvents(sf::Event& evnt)
 
 void MainGame::render(sf::RenderTarget& target)
 {
-    auto& window = Application::getWindow();
-    info.render(window);
+    info.render(target);
 
-    m_grid.render(window);
+    m_grid.render(target);
 
 	for (auto& groundCell : m_ground) {
 		groundCell.render(target);
 	}
-    m_shape->render(window);
+    m_shape->render(target);
 }
 
 void MainGame::input(sf::RenderWindow& window)
