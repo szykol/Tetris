@@ -66,7 +66,10 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 		auto gridSize = m_grid.getSize();
 
 		if (nextPositionTouchesGround(nextIndex))
+		{
 			spawnNewShape();
+			clearGround();
+		}
 			
 		m_shape->applyMovement(Shape::Movement::DOWN);
         gravityDeltaTime -= gravityTime;
@@ -127,6 +130,18 @@ void MainGame::keepShapeInBounds()
 	}
 }
 
+void MainGame::pullTheGround(int y)
+{
+	std::for_each(m_ground.begin(), m_ground.end(), [y](auto& c)
+		{
+			auto [prevX, prevY] = c.getIndex();
+			if (prevY <= y)
+			{
+				c.setIndex({ prevX, prevY + 1 });
+			}
+		});
+}
+
 void MainGame::spawnNewShape()
 {
 	auto shapeCells = m_shape->getCells();
@@ -137,6 +152,26 @@ void MainGame::spawnNewShape()
 
 	m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{ posX, 0 });
 	keepShapeInBounds();
+}
+
+void MainGame::clearGround()
+{
+	for (int y = m_grid.getSize().y -1; y >= 0;)
+	{
+		auto pred = [&y](auto &c) {
+			return c.getIndex().y == y;
+		};
+		auto count = std::count_if(m_ground.begin(), m_ground.end(), pred);
+		if (count == m_grid.getSize().x)
+		{
+			m_ground.erase(std::remove_if(m_ground.begin(), m_ground.end(), pred), m_ground.end());
+			pullTheGround(y);
+		}
+		else
+		{
+			y--;
+		}
+	}
 }
 
 void MainGame::handleEvents(sf::Event& evnt)

@@ -33,6 +33,8 @@ public:
     inline static const sf::Vector2f& getGridTopLeft() {return s_gridTopLeft;}
     bool nextPositionTouchesGround(const std::vector<sf::Vector2i>& nextPosition);
     std::tuple<bool,AreaBounds> nextPositionInArea(const std::vector<sf::Vector2i>& nextPosition);
+    void clearGround();
     void keepShapeInBounds();
+	void pullTheGround(int y);
     void spawnNewShape();
 };
