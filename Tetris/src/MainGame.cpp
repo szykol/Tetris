@@ -2,6 +2,8 @@
 
 #include <Application.h>
 #include <Managers/AudioProvider.h>
+#include <Managers/StateManager.h>
+#include <GUI/Popup.h>
 #include <Util/Random.h>
 
 #include <iostream>
@@ -69,6 +71,7 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 			}
 		}
     }
+
     if (gravityDeltaTime > gravityTime)
     {
 		auto nextIndex = m_shape->calculateNextPosition(Shape::Movement::DOWN);
@@ -159,6 +162,20 @@ void MainGame::spawnNewShape()
 
 	m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2i{ int(posX), -2 });
 	keepShapeInBounds();
+
+
+	auto currentCells = m_shape->getCells();
+
+	std::vector<sf::Vector2i> cellIndices; 
+	std::transform( currentCells.begin(), currentCells.end(), std::back_inserter( cellIndices ), [](const Cell& c) {
+		return c.getIndex();
+	});
+
+	if (nextPositionTouchesGround(cellIndices))
+	{
+		auto pop = std::make_unique<sen::Popup>("END GAME");
+		sen::StateManager::pushPopup(std::move(pop));
+	}
 }
 
 void MainGame::shapeToGround()
