@@ -2,7 +2,7 @@
 
 #include "Application.h"
 #include "Managers/StateManager.h"
-#include "SimpleMenu.h"
+#include "Menu.h"
 #include "Managers/CacheSystem.h"
 
 #include <memory>
@@ -15,8 +15,8 @@ int main()
 	window.setFramerateLimit(0U);
 
 	Application::init(&window);
-
-	auto temp = std::make_unique<MainGame>();
+	sen::StateManager::switchBackButton(false);
+	auto temp = std::make_unique<MenuState>();
 	sen::StateManager::pushState(std::move(temp));
 	Application::run();
 
