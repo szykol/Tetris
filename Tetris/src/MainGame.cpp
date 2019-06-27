@@ -36,7 +36,7 @@ void MainGame::update(sf::RenderWindow& window)
 
 void MainGame::update(float deltaTime, sf::RenderWindow& window)
 {
-    static const auto gravityTime = 0.2f;
+    static const auto gravityTime = 0.5f;
     static const auto moveTime = 0.15f;
 
     gravityDeltaTime += deltaTime;
@@ -48,9 +48,12 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
             move = Shape::Movement::RIGHT;
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             move = Shape::Movement::LEFT;
-        
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+			move = Shape::Movement::ROTATE_RIGHT;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+			move = Shape::Movement::ROTATE_LEFT;
+
 		auto nextIndex = m_shape->calculateNextPosition(move);
-		
 		auto [inArea, bounds] = nextPositionInArea(nextIndex);
 		if (!nextPositionTouchesGround(nextIndex) && inArea)
 			m_shape->applyMovement(move);
@@ -129,7 +132,8 @@ void MainGame::spawnNewShape()
 	auto shapeCells = m_shape->getCells();
 	m_ground.insert(m_ground.end(), shapeCells.begin(), shapeCells.end());
 
-	auto type = sen::Random::get<int>(0, Shape::Type::Z);
+	//auto type = sen::Random::get<int>(0, Shape::Type::Z);
+	auto type = Shape::Type::T;
 	auto posX = sen::Random::get<unsigned int>(0, 10);
 
 	m_shape = std::make_unique<Shape>((Shape::Type)type, sf::Vector2u{ posX, 0 });

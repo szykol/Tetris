@@ -3,6 +3,7 @@
 #include <functional>
 
 Shape::Shape(Shape::Type type, const sf::Vector2u& startPos)
+    : m_type(type)
 {
     auto color = sf::Color::Yellow;
     if(type == Type::L)
@@ -26,7 +27,7 @@ Shape::Shape(Shape::Type type, const sf::Vector2u& startPos)
     }
     else if (type == Type::T)
     {
-        m_cells = {Cell(startPos + sf::Vector2u{0,0}), Cell(startPos + sf::Vector2u{1, 0}), Cell(startPos + sf::Vector2u{2, 0}), Cell(startPos + sf::Vector2u{1, 1})};
+        m_cells = {Cell(startPos + sf::Vector2u{0,1}), Cell(startPos + sf::Vector2u{1, 1}), Cell(startPos + sf::Vector2u{2, 1}), Cell(startPos + sf::Vector2u{1, 0})};
         color = sf::Color(222,222,222);
     }
     else if (type == Type::S)
@@ -68,6 +69,8 @@ std::vector<sf::Vector2i> Shape::calculateNextPosition(Movement movement)
 		indexVector = { -1, 0 };
 	else if (movement == Movement::RIGHT)
 		indexVector = { 1, 0 };
+    else if (movement == Movement::ROTATE_LEFT || movement == Movement::ROTATE_RIGHT)
+        return calculateRotation(movement);
 
 	std::vector<sf::Vector2i> newPos;
 	for (auto& cell : m_cells)
@@ -78,6 +81,53 @@ std::vector<sf::Vector2i> Shape::calculateNextPosition(Movement movement)
 	}
 
 	return newPos;
+}
+
+std::vector<sf::Vector2i> Shape::calculateRotation(Movement movement)
+{
+	std::vector<sf::Vector2i> transformations = { sf::Vector2i(0, 0), sf::Vector2i(0, 0), sf::Vector2i(0, 0), sf::Vector2i(0, 0) };
+
+    if (movement == Movement::ROTATE_RIGHT)
+    {
+		if (m_type == Type::T)
+		{
+			auto [px, py] = m_cells[1].getIndex();
+
+			auto transfIt = transformations.begin();
+			for (auto& cell : m_cells)
+			{
+				auto [x1, y1] = cell.getIndex();
+				auto x2 = (px + py - y1);
+				auto y2 = (x1 + py - px);
+
+				*transfIt = sf::Vector2i(x2, y2);
+				transfIt++;
+			}
+			
+		}
+
+    }
+    else if (movement == Movement::ROTATE_LEFT)
+    {
+        if(m_type == Type::T)
+        {
+			auto [px, py] = m_cells[1].getIndex();
+
+			auto transfIt = transformations.begin();
+			for (auto& cell : m_cells)
+			{
+				auto [x1, y1] = cell.getIndex();
+				auto x2 = (y1 + px - py);
+				auto y2 = (px + py - x1);
+
+
+				*transfIt = sf::Vector2i(x2, y2);
+				transfIt++;
+			}
+        }
+    }
+
+    return transformations;
 }
 
 void Shape::render(sf::RenderTarget& target)
