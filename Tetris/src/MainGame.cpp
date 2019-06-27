@@ -37,7 +37,7 @@ void MainGame::update(sf::RenderWindow& window)
 void MainGame::update(float deltaTime, sf::RenderWindow& window)
 {
     static const auto gravityTime = 0.5f;
-    static const auto moveTime = 0.15f;
+    static const auto moveTime = 0.1f;
 
     gravityDeltaTime += deltaTime;
     movementDeltaTime += deltaTime;
@@ -63,11 +63,14 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 			{
 				m_shape->applyMovement(move);
 				keepShapeInBounds();
+		        movementDeltaTime -= moveTime;
 			}
 			else if (inArea)
+			{
 				m_shape->applyMovement(move);
+				movementDeltaTime -= moveTime;
+			}
 		}
-        movementDeltaTime -= moveTime;
     }
     if (gravityDeltaTime > gravityTime)
     {
