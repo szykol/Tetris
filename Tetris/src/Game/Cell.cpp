@@ -1,6 +1,6 @@
 #include "Cell.h"
 
-#include "MainGame.h"
+#include "../States/MainGame.h"
 
 Cell::Cell(const sf::Vector2i& index)
     : m_gridIndex(index)

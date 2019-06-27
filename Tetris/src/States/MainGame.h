@@ -3,9 +3,9 @@
 #include <States/State.h>
 #include <GUI/TextBox.h>
 
-#include "Grid.h"
-#include "Shape.h"
-#include "Cell.h"
+#include "../Game/Grid.h"
+#include "../Game/Shape.h"
+#include "../Game/Cell.h"
 
 #include <tuple>
 

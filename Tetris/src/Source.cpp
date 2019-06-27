@@ -1,13 +1,12 @@
 #include <SFML/Graphics.hpp>
 
-#include "Application.h"
-#include "Managers/StateManager.h"
-#include "Menu.h"
-#include "Managers/CacheSystem.h"
+#include <Application.h>
+#include <Managers/StateManager.h>
+#include <Managers/CacheSystem.h>
+
+#include "States/Menu.h"
 
 #include <memory>
-
-#include "MainGame.h"
 
 int main()
 {
