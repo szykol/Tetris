@@ -41,13 +41,13 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 
     gravityDeltaTime += deltaTime;
     movementDeltaTime += deltaTime;
-    if (movementDeltaTime >= moveTime)
-    {
+	if (movementDeltaTime >= moveTime)
+	{
 		auto move = Shape::Movement::NONE;
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            move = Shape::Movement::RIGHT;
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            move = Shape::Movement::LEFT;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			move = Shape::Movement::RIGHT;
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			move = Shape::Movement::LEFT;
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 			move = Shape::Movement::ROTATE_RIGHT;
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
@@ -55,9 +55,18 @@ void MainGame::update(float deltaTime, sf::RenderWindow& window)
 
 		auto nextIndex = m_shape->calculateNextPosition(move);
 		auto [inArea, bounds] = nextPositionInArea(nextIndex);
-		if (!nextPositionTouchesGround(nextIndex) && inArea)
-			m_shape->applyMovement(move);
-		
+
+
+		if (!nextPositionTouchesGround(nextIndex))
+		{
+			if (move == Shape::Movement::ROTATE_LEFT || move == Shape::Movement::ROTATE_RIGHT)
+			{
+				m_shape->applyMovement(move);
+				keepShapeInBounds();
+			}
+			else if (inArea)
+				m_shape->applyMovement(move);
+		}
         movementDeltaTime -= moveTime;
     }
     if (gravityDeltaTime > gravityTime)
