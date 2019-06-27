@@ -15,8 +15,6 @@ int main()
 	window.setFramerateLimit(0U);
 
 	Application::init(&window);
-	auto backgroundImage = sen::CacheSystem::get<sf::Texture>("../res/Images/bg.jpeg");
-	Application::setBackgroundImage(*backgroundImage);
 
 	auto temp = std::make_unique<MainGame>();
 	sen::StateManager::pushState(std::move(temp));

@@ -192,6 +192,7 @@ void MainGame::handleEvents(sf::Event& evnt)
 
 void MainGame::render(sf::RenderTarget& target)
 {
+	target.clear(sf::Color(128,128,128));
     info.render(target);
 
     m_grid.render(target);
