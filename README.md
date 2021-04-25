@@ -1,6 +1,9 @@
 # Tetris
 ## Simple 2D Tetris game made with Skeleton and SFML. 
 
+## Screenshot:
+![Example Screenshot](res/Screenshots/tet.png "Example Screenshot") 
+
 ## How to build
 ### Tetris is based on SFML and Skeleton and uses premake5 to build
 
