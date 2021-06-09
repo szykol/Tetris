@@ -1,41 +1,59 @@
 # Tetris
 ## Simple 2D Tetris game made with Skeleton and SFML. 
 
-## Screenshot:
-![Example Screenshot](res/Screenshots/tet.png "Example Screenshot") 
+## Screenshots:
+### Main menu made using Skeleton
+![Menu Screenshot](res/Screenshots/menu.png "Menu Screenshot") 
+### Game
+![Game Screenshot](res/Screenshots/tet.png "Game Screenshot") 
 
-## How to build
-### Tetris is based on SFML and Skeleton and uses premake5 to build
+# How to build
+## CMake
+Download [SFML](https://www.sfml-dev.org/download/sfml/2.5.1/) compatible with your compiler and extract it to folder
+in the project or use your package manager to download the library.
 
-Download [SFML](https://www.sfml-dev.org/download/sfml/2.5.1/) and extract it to the *vendor/SFML* folder.
-
-Download [premake5](https://premake.github.io/download.html) and remember it's location or add it to path
-
-### Example: Generating Visual Studio 2019 solution and project files
+## Linux
+Root project Makefile takes care of building the project. It accepts two flags that are passed to CMake.
+* `CMAKE_BUILD_TYPE` - the build type. If not specified `Debug` is used.
+* `SFML_DIR` - CMake configuration path. This should be used when SFML was installed manually to tell `find_package` where
+to search SFML for.
+### Example: Linux with defualt parameters
 ```
-  path/to/premake5.exe vs2019
-  // or if the path to SFML is different than default
-  path/to/premake5.exe --sfmlpath=path/to/SFML vs2019
-```
-Then compile it and run with Visual Studio
-
-### Example: Generating Makefiles
-```
-  path/to/premake5.exe gmake2
-  // or if the path to SFML is different than default
-  path/to/premake5.exe --sfmlpath=path/to/SFML gmake2
+make
+build/Sandbox
 ```
 
-After that
+### Example: Linux with non default parameters
+This shows `CMAKE_BUILD_TYPE` and `SFML_DIR` passed as parameters. This assumes SFML was downloaded and extracted in
+`vendor` folder.
 ```
-  make
-  // after sucessful compilation
-  cd Tetris
-  // it needs to be run from the projects root directory for now
-  ..\bin\Debug-windows-x86\Tetris\Tetris.exe
+make CMAKE_BUILD_TYPE=Release SFML_DIR=vendor/SFML-2.5.1/lib/cmake/SFML
+build/Sandbox
 ```
 
-Keep in mind that path to the downloaded SFML **must be** relative to the premake5.lua script
+## Windows
+### Example: Windows Visual Studio
+CMake should take care of creating the solution files. As this example does not use Makefile, you need to pass the
+`SFML_DIR` parameter directly to CMake:
+```
+mkdir build
+cd build
+cmake -DSFML_DIR="vendor\SFML-2.5.1\lib\cmake\SFML"  ..
 
-### Other platforms and project files
-For generating other project files or for different platforms head to this [link](https://github.com/premake/premake-core/wiki/Using-Premake)
+# for 32 bit version:
+# cmake -A Win32 -DSFML_DIR="vendor\SFML-2.5.1\lib\cmake\SFML"  ..
+```
+After that open generated solution file and hit build. 
+Copy needed dlls to binary location.
+Note: You may need to set Sandbox as the startup project.
+
+### Example: Windows MinGW Makefiles
+This works similiar to the previous example but uses different generator.
+```
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" -DSFML_DIR="vendor\SFML-2.5.1\lib\cmake\SFML"  ..
+make
+# run the app after copying dll files
+Sandbox.exe
+```
