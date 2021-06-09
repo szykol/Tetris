@@ -13,10 +13,8 @@ int main() {
     window.setFramerateLimit(0U);
 
     Application::init(&window);
-    sen::StateManager::switchBackButton(false);
     auto backgroundImage = sen::CacheSystem::getCustomResource<sf::Texture>("Images/tet.jpg");
     Application::setBackgroundImage(*backgroundImage);
-    sen::StateManager::switchBackButton(true);
     auto temp = std::make_unique<MenuState>();
     sen::StateManager::pushState(std::move(temp));
     Application::run();
