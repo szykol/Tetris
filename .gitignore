@@ -12,7 +12,6 @@
 compile_commands.json
 .DS_Store
 .cache/
-vendor/
 bin-int/
 .vscode/
 *.sln
