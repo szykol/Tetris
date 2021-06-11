@@ -24,15 +24,9 @@ ScoreState::ScoreState(int score) : m_textBox("Your score is: " + std::to_string
     m_bc.placeButtons();
 }
 
-void ScoreState::update(sf::RenderWindow &window) {}
-
-void ScoreState::update(float deltaTime, sf::RenderWindow &window) { m_bc.update(deltaTime); }
-
-void ScoreState::handleEvents(sf::Event &evnt) {}
+void ScoreState::update(float deltaTime, sf::RenderWindow &) { m_bc.update(deltaTime); }
 
 void ScoreState::render(sf::RenderTarget &target) {
     m_textBox.render(target);
     m_bc.render(target);
 }
-
-void ScoreState::input(sf::RenderWindow &window) {}

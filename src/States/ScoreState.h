@@ -11,9 +11,6 @@ class ScoreState : public sen::State {
   public:
     explicit ScoreState(int score = 0);
 
-    virtual void update(sf::RenderWindow &window) override;
     virtual void update(float deltaTime, sf::RenderWindow &window) override;
-    virtual void handleEvents(sf::Event &evnt) override;
     virtual void render(sf::RenderTarget &target) override;
-    virtual void input(sf::RenderWindow &window) override;
 };

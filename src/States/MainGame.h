@@ -19,19 +19,14 @@ class MainGame : public sen::State {
     std::unique_ptr<Shape> m_shape;
     std::vector<Cell> m_ground;
 
-    bool m_hitGround = false;
-
     enum AreaBounds { NONE = 0, LEFT, RIGHT };
     int m_score = 0;
 
   public:
     MainGame();
 
-    virtual void update(sf::RenderWindow &window) override;
     virtual void update(float deltaTime, sf::RenderWindow &window) override;
-    virtual void handleEvents(sf::Event &evnt) override;
     virtual void render(sf::RenderTarget &target) override;
-    virtual void input(sf::RenderWindow &window) override;
 
     inline static const sf::Vector2f &getGridTopLeft() { return s_gridTopLeft; }
     bool nextPositionTouchesGround(const std::vector<sf::Vector2i> &nextPosition);

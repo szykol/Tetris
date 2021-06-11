@@ -12,14 +12,13 @@
 
 sf::Vector2f MainGame::s_gridTopLeft = sf::Vector2f(400, 0);
 
-MainGame::MainGame() : m_score(0), m_scoreBox("Your Score: 0"), m_grid({10, 20}, s_gridTopLeft) {
+MainGame::MainGame() : m_scoreBox("Your Score: 0"), m_grid({10, 20}, s_gridTopLeft), m_score(0) {
     m_scoreBox.setFitTextSize(true);
     auto sizeX = Application::getInitialWindowSize().x;
     m_scoreBox.setPosition(sizeX - 200, 200);
-    // sen::AudioProvider::get()->playMusic("../res/Sounds/Motivational.wav");
 
     auto [x, y] = m_grid.getSize();
-    for (int i = 0; i < x; i++) {
+    for (uint i = 0; i < x; i++) {
         m_ground.push_back(sf::Vector2i(i, y));
     }
 
@@ -27,9 +26,7 @@ MainGame::MainGame() : m_score(0), m_scoreBox("Your Score: 0"), m_grid({10, 20},
     keepShapeInBounds();
 }
 
-void MainGame::update(sf::RenderWindow &window) {}
-
-void MainGame::update(float deltaTime, sf::RenderWindow &window) {
+void MainGame::update(float deltaTime, sf::RenderWindow &) {
     static auto gravityTime = 0.5f;
     static const auto rotateTime = 0.35f;
     static const auto moveTime = 0.1f;
@@ -64,8 +61,6 @@ void MainGame::update(float deltaTime, sf::RenderWindow &window) {
             move = Shape::Movement::ROTATE_LEFT;
 
         auto nextIndex = m_shape->calculateNextPosition(move);
-        auto [inArea, bounds] = nextPositionInArea(nextIndex);
-
         if (!nextPositionTouchesGround(nextIndex))
             if (move == Shape::Movement::ROTATE_LEFT || move == Shape::Movement::ROTATE_RIGHT) {
                 m_shape->applyMovement(move);
@@ -81,8 +76,6 @@ void MainGame::update(float deltaTime, sf::RenderWindow &window) {
 
     if (gravityDeltaTime > gravityTime) {
         auto nextIndex = m_shape->calculateNextPosition(Shape::Movement::DOWN);
-        auto gridSize = m_grid.getSize();
-
         if (nextPositionTouchesGround(nextIndex)) {
             shapeToGround();
             spawnNewShape();
@@ -111,7 +104,7 @@ std::tuple<bool, MainGame::AreaBounds> MainGame::nextPositionInArea(const std::v
     for (auto &nextIndexCell : nextIndex) {
         if (nextIndexCell.x < 0)
             return std::make_tuple(false, AreaBounds::LEFT);
-        else if (nextIndexCell.x >= gridSize.x)
+        else if (nextIndexCell.x >= int(gridSize.x))
             return std::make_tuple(false, AreaBounds::RIGHT);
     }
     return std::make_tuple(true, AreaBounds::NONE);
@@ -197,8 +190,6 @@ void MainGame::clearGround() {
         m_score += 1200;
 }
 
-void MainGame::handleEvents(sf::Event &evnt) {}
-
 void MainGame::render(sf::RenderTarget &target) {
     target.clear(sf::Color::Black);
 
@@ -210,5 +201,3 @@ void MainGame::render(sf::RenderTarget &target) {
     m_shape->render(target);
     m_scoreBox.render(target);
 }
-
-void MainGame::input(sf::RenderWindow &window) {}
